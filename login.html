@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Skill Swap Squad</title>
+  <style>
+    body {font-family: Arial, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;}
+    .box {background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 300px; text-align: center;}
+    input {width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc;}
+    button {width: 100%; padding: 10px; background: #6200ea; color: white; border: none; border-radius: 6px; cursor: pointer;}
+    a {display: block; margin-top: 10px; color: #6200ea; text-decoration: none;}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🔑 Login</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <a href="./dashboard.html"></a><button onclick="login()">Login</button></a>
+    <a href="register.html">New user? Register here</a>
+  </div>
+
+  <script>
+    function login() {
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      let user = users.find(u => u.username === username && u.password === password);
+
+      if(user) {
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        alert("✅ Login successful!");
+        window.location.href = "dashboard.html"; // redirect only on success
+      } else {
+        alert("❌ Invalid username or password!");
+      }
+    }
+  </script>
+</body>
+</html>

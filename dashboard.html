@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Skill Swap Squad</title>
+  <style>
+    body {margin: 0; font-family: "Segoe UI", Tahoma, sans-serif; background: #f4f4f9; color: #333;}
+    .navbar {background: #6200ea; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;}
+    .navbar h2 {margin: 0;}
+    .navbar a {color: white; margin-left: 20px; text-decoration: none; font-weight: 500;}
+    .container {padding: 30px;}
+    .grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;}
+    .card {background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+    .card h3 {margin-top: 0;}
+    .stat {font-size: 22px; font-weight: bold; color: #6200ea;}
+    .welcome {margin-bottom: 25px;}
+    .logout-btn {background: #ff3b30; border: none; padding: 8px 15px; border-radius: 6px; color: white; cursor: pointer;}
+    .logout-btn:hover {background: #e02e24;}
+    .profile-icon {width: 40px; height: 40px; border-radius: 50%; background: white; color: #6200ea; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; margin-left: 15px;}
+    .search-container {margin: 20px 0; text-align: center;}
+    .search-container input {width: 60%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;}
+    .results {margin-top: 20px;}
+    .result-item {background: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin: 8px 0; cursor: pointer;}
+    .result-item:hover {background: #f0f0ff;}
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <h2>⚡ Skill Swap Squad</h2>
+    <div style="display: flex; align-items: center;">
+      <a href="./dashboard.html">🏠 Dashboard</a>
+      <a href="transfer.html">💰 Transfer</a>
+      <a href="./history.html">📜 History</a>
+      <div class="profile-icon" onclick="openProfile()">
+        👤
+      </div>
+      <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2 class="welcome" id="welcome"></h2>
+
+    <!-- 🔍 Search bar -->
+    <div class="search-container">
+      <input type="text" id="searchBar" placeholder="Search by username or skill..." onkeyup="searchUsers()">
+    </div>
+    <div class="results" id="results"></div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>📚 Teach Skill</h3>
+        <p class="stat" id="teachSkill">-</p>
+      </div>
+      <div class="card">
+        <h3>🎯 Learn Skill</h3>
+        <p class="stat" id="learnSkill">-</p>
+      </div>
+      <div class="card">
+        <h3>💎 Swap Coins</h3>
+        <p class="stat" id="coins">0</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if(!currentUser) {
+      alert("⚠️ Please login first!");
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("welcome").innerText = "Welcome back, " + currentUser.username + " 👋";
+      document.getElementById("teachSkill").innerText = currentUser.teachSkill || "Not set";
+      document.getElementById("learnSkill").innerText = currentUser.learnSkill || "Not set";
+      document.getElementById("coins").innerText = currentUser.coins || 0;
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "login.html";
+    }
+
+    // Profile
+    function openProfile() {
+      localStorage.setItem("profileUser", JSON.stringify(currentUser));
+      window.location.href = "profile.html";
+    }
+
+    // Search function
+    function searchUsers() {
+      let query = document.getElementById("searchBar").value.toLowerCase();
+      let resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if(query.trim() === "") return;
+
+      let filtered = users.filter(u => 
+        u.username.toLowerCase().includes(query) || 
+        (u.teachSkill && u.teachSkill.toLowerCase().includes(query)) || 
+        (u.learnSkill && u.learnSkill.toLowerCase().includes(query))
+      );
+
+      if(filtered.length === 0) {
+        resultsDiv.innerHTML = "<p>No results found ❌</p>";
+        return;
+      }
+
+      filtered.forEach(u => {
+        let div = document.createElement("div");
+        div.className = "result-item";
+        div.innerHTML = `<strong>${u.username}</strong> — Teach: ${u.teachSkill || "-"}, Learn: ${u.learnSkill || "-"}`;
+        div.onclick = () => {
+          localStorage.setItem("profileUser", JSON.stringify(u));
+          window.location.href = "profile.html";
+        };
+        resultsDiv.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>

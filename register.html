@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Skill Swap Squad</title>
+  <style>
+    body {font-family: Arial, sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh;}
+    .box {background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 300px;}
+    input {width: 100%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc;}
+    button {width: 100%; padding: 10px; background: #6200ea; color: white; border: none; border-radius: 6px; cursor: pointer;}
+    a {display: block; margin-top: 10px; text-align: center; color: #6200ea; text-decoration: none;}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>📝 Register</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <input type="text" id="teach" placeholder="Skill you can teach" required>
+    <input type="text" id="learn" placeholder="Skill you want to learn" required>
+    <button onclick="register()">Register</button>
+    <a href="login.html">Already have an account? Login</a>
+  </div>
+
+  <script>
+    function register() {
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+      let teach = document.getElementById("teach").value;
+      let learn = document.getElementById("learn").value;
+
+      if(!username || !password) { alert("Please fill all fields!"); return; }
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      if(users.find(u => u.username === username)) {
+        alert("⚠ Username already exists!");
+        return;
+      }
+
+      let newUser = { username, password, teach, learn, coins: 100, transactions: [] };
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("✅ Registered successfully! Please login.");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>
